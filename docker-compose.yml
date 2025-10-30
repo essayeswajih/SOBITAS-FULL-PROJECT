@@ -1,0 +1,157 @@
+version: "3.8"
+
+services:
+  # -------------------------
+  # Application Database
+  # -------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: sobitas-mysql
+    restart: unless-stopped
+    env_file: 
+      - .env     # must contain MYSQL_* variables
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./db/protein_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - sobitas-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # -------------------------
+  # PHP-FPM (Laravel)
+  # -------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sobitas-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env       # Laravel env
+    volumes:
+      - ./backend:/var/www/html:delegated
+    networks:
+      - sobitas-net
+    expose:
+      - "9000"
+    depends_on:
+      - mysql
+    healthcheck:
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    # Use the default cmd in Dockerfile (php-fpm). Do not auto-run migrations on every start in pre-prod.
+    # To run migrations, use a one-off command: docker-compose run --rm backend php artisan migrate --force
+
+  # -------------------------
+  # Nginx for Laravel (serves /public, proxies FastCGI to backend)
+  # -------------------------
+  laravel-nginx:
+    image: nginx:stable
+    container_name: sobitas-laravel-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"    # local pre-prod access for the API/backend
+    volumes:
+      - ./backend:/var/www/html:ro
+      - ./nginx/laravel.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - sobitas-net
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # -------------------------
+  # Angular Frontend (build + serve via nginx)
+  # -------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sobitas-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:8080"     # local access to frontend
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro   # assumes frontend Dockerfile outputs to ./frontend/dist
+      - ./nginx-frontend/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - sobitas-net
+    depends_on:
+      - backend
+
+  # -------------------------
+  # Nginx Proxy Manager (public entry + Let's Encrypt)
+  # -------------------------
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: sobitas-npm
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "8443:443"
+      - "81:81"    # NPM admin UI
+    environment:
+      DB_MYSQL_HOST: npm-db
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: npm
+      DB_MYSQL_PASSWORD: npm
+      DB_MYSQL_NAME: npm
+    volumes:
+      - npm-data:/data
+      - npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - sobitas-net
+    depends_on:
+      - npm-db
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # -------------------------
+  # NPM's MySQL (for Nginx Proxy Manager)
+  # -------------------------
+  npm-db:
+    image: mysql:8.0
+    container_name: sobitas-npm-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: npmroot
+      MYSQL_DATABASE: npm
+      MYSQL_USER: npm
+      MYSQL_PASSWORD: npm
+    volumes:
+      - npm-db-data:/var/lib/mysql
+    networks:
+      - sobitas-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "npm", "-p npm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql-data:
+  npm-data:
+  npm-letsencrypt:
+  npm-db-data:
+
+networks:
+  sobitas-net:
+    driver: bridge

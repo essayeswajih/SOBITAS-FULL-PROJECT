@@ -9,7 +9,7 @@
                 ? storage + product.cover
                 : 'assets/img/product/p1.webp'
             "
-            [style.opacity]="product.rupture == 0 ? 0.5 : 1"
+            [style.opacity]="product.rupture == 0 ? 1 : 1"
             fill
             [alt]="
               product.alt_cover ? product.alt_cover : product.designation_fr
@@ -21,7 +21,7 @@
             "
             class="product-image"
           />
-          <div class="sign" *ngIf="product.rupture == 0">Rupture De Stock</div>
+          <!--<div class="sign" *ngIf="product.rupture == 0">Rupture De Stock</div>-->
         </a>
 
         <div class="label_product" *ngIf="percentage">

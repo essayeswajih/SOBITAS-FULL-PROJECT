@@ -20975,7 +20975,7 @@ textarea:-ms-input-placeholder {
 }
 
 .mega_menu_inner>li>a {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 24px;
   text-transform: capitalize;
   font-weight: 500;
@@ -20992,11 +20992,13 @@ textarea:-ms-input-placeholder {
 }
 
 .mega_menu_inner>li ul li a {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   display: block;
   line-height: 28px;
   text-transform: capitalize;
+  color: #444;
+  font-weight: bold;
 }
 
 .mega_menu_inner>li ul li a:hover {

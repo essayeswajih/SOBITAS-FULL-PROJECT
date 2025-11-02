@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# But keep gitignore file itself
+!.gitignore
+
+# Keep all product images and subfolders
+!produits/
+!produits/**
+
+# (Optional) keep other folders like 'avatars', 'banners', etc.
+# !avatars/
+# !avatars/**

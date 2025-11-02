@@ -47,8 +47,8 @@ services:
       timeout: 5s
       retries: 3
     # Remove host mount to preserve built vendor folder
-    # volumes:
-    #   - ./backend:/var/www/html:delegated
+    volumes:
+      - ./backend:/var/www/html:delegated
 
   # -------------------------
   # Nginx for Laravel

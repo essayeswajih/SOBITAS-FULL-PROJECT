@@ -9,5 +9,5 @@
 !produits/**
 
 # (Optional) keep other folders like 'avatars', 'banners', etc.
-# !avatars/
+!*/
 # !avatars/**

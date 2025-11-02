@@ -112,6 +112,7 @@ services:
       - npm-data:/data
       - npm-letsencrypt:/etc/letsencrypt
       - ./letsencrypt/credentials:/etc/letsencrypt/credentials
+      - ./backend/storage/app/public:/var/www/html/storage/app/public:ro
     networks:
       - sobitas-net
     depends_on:

@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   slides: any = [
     {
         "cover": "assets/img/slides/1.jpg",
-        "designation_fr": null,
+        "designation_fr": "Sobitas, votre boutique de compléments alimentaires en ligne",
         "description_fr": null,
         "btn_text_fr": "Liste des produits",
         "btn_link": null,
@@ -34,35 +34,13 @@ export class HomeComponent implements OnInit {
     },
     {
         "cover": "assets/img/slides/2.webp",
-        "designation_fr": null,
+        "designation_fr": "Sobitas, votre boutique de compléments alimentaires en ligne en Tunisie",
         "description_fr": null,
         "btn_text_fr": null,
         "btn_link": null,
         "position": "right",
         "text_color": "#07e921",
         "text_weight": "600",
-        "type": "web"
-    },
-    {
-        "cover": "assets/img/slides/3.webp",
-        "designation_fr": null,
-        "description_fr": null,
-        "btn_text_fr": null,
-        "btn_link": null,
-        "position": "right",
-        "text_color": "#000000",
-        "text_weight": "100",
-        "type": "web"
-    },
-    {
-        "cover": "assets/img/slides/4.webp",
-        "designation_fr": null,
-        "description_fr": null,
-        "btn_text_fr": null,
-        "btn_link": null,
-        "position": "right",
-        "text_color": "#000000",
-        "text_weight": "100",
         "type": "web"
     },
     {
@@ -87,28 +65,6 @@ export class HomeComponent implements OnInit {
         "text_weight": "100",
         "type": "mobile"
     },
-    {
-        "cover": "assets/img/slides/3m.webp",
-        "designation_fr": null,
-        "description_fr": null,
-        "btn_text_fr": null,
-        "btn_link": null,
-        "position": "right",
-        "text_color": "#000000",
-        "text_weight": "100",
-        "type": "mobile"
-    },
-    {
-        "cover": "assets/img/slides/4m.webp",
-        "designation_fr": null,
-        "description_fr": null,
-        "btn_text_fr": null,
-        "btn_link": null,
-        "position": "right",
-        "text_color": "#000000",
-        "text_weight": "100",
-        "type": "mobile"
-    }
 ]
   articles: any[] = [];
   best_sellers: any = [];
@@ -160,11 +116,10 @@ export class HomeComponent implements OnInit {
 
 
     this.general.latest_products().subscribe((data: any) => {
-      this.new_products = data.new_product;
+      //i want just 4 products
+      this.new_products = data.new_product.slice(0, 4);
       this.best_sellers = data.best_sellers;
       this.packs = data.packs
-
-
 
     });
     this.createCanonicalURL()

@@ -21,21 +21,48 @@
     </div>
   </div>
 </div>
-<div class=" container"  style="width: 90%; margin:auto ; margin-top:50px; margin-bottom : 50px">
-  <div class=" row">
+<!--brand area start-->
+<div class="container" style="width: 90%; margin:auto ; margin-top:50px; margin-bottom : 50px">
+  <div class="row" *ngIf="show_brands && brands1.length">
 
-    <owl-carousel-o  *ngIf="show_brands && brands1 && brands1.length " [options]="customOptions">    ttt
+    <!-- Swiper Brands Carousel (replaces owl-carousel-o) -->
+    <swiper-container
+      #swiperBrands
+      init="false"
+      slides-per-view="3"
+      space-between="30"
+      autoplay-delay="1000"
+      autoplay-disable-on-interaction="false"
+      speed="200"
+      loop="false"
+      navigation="false"
+      grab-cursor="true"
+      breakpoints='{
+        "400": { "slidesPerView": 4 },
+        "740": { "slidesPerView": 5 },
+        "940": { "slidesPerView": 6 },
+        "1200": { "slidesPerView": 6 }
+      }'
+    >
       <ng-container *ngFor="let slide of brands1">
-        <ng-template carouselSlide [id]="slide.id">
-          <img loading="lazy" [src]="storage + slide.logo" [alt]="slide.designation_fr" [title]="slide.designation_fr" [width]="200" height="80" style="height: 90px ;padding: 15px; cursor : pointer"
-          [routerLink]="['/brand' , slide.designation_fr , slide.id]">
-        </ng-template>
+        <swiper-slide>
+          <img 
+            loading="lazy" 
+            [src]="storage + slide.logo" 
+            [alt]="slide.designation_fr" 
+            [title]="slide.designation_fr" 
+            width="200" 
+            height="80" 
+            style="height: 90px; padding: 15px; cursor: pointer; object-fit: contain; background: white;"
+            [routerLink]="['/brand', slide.designation_fr, slide.id]"
+          >
+        </swiper-slide>
       </ng-container>
-    </owl-carousel-o>
+    </swiper-container>
+
   </div>
-
-
 </div>
+<!--brand-->
 <footer class="footer_widgets">
   <!--newsletter area start-->
   <div class="newsletter_area newsletter_three">

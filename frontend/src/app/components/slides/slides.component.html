@@ -1,25 +1,58 @@
 <section class="slider_section s_section_two">
+  <!-- 1. PRELOAD la première slide (LCP) – indispensable -->
+  <link *ngIf="data && data.length > 0" rel="preload" as="image" 
+        [href]="data[0].cover" 
+        fetchpriority="high">
+
   <swiper-container
     #swiperEl
     loop="true"
     slides-per-view="1"
     autoplay-delay="3000"
+    autoplay-disable-on-interaction="false"
+    speed="800"
     [effect]="screenwidth > 700 ? 'fade' : 'slide'"
     fade-effect-cross-fade="true"
     pagination="true"
-    lazy="true"
+    pagination-clickable="true"
+    grab-cursor="true"
     init="false"
   >
-    <ng-container *ngFor="let slide of data">
-      <swiper-slide>
-        <!-- Lazy-loaded image for better performance -->
-        <div class="single_slider d-flex align-items-center" style="height: 560px; position: relative;">
-          <img class="swiper-lazy" lazy [src]="slide.cover" [alt]="slide.designation_fr" style="width:100%; height:100%; object-fit: cover;">
-          <div class="swiper-lazy-preloader"></div>
 
+    <ng-container *ngFor="let slide of data; let i = index">
+      <swiper-slide>
+
+        <!-- Première slide = LCP → NO lazy, eager + fetchpriority high -->
+        <div class="single_slider d-flex align-items-center" 
+             style="height: 560px; position: relative; background:#000;">
+          
+          <img 
+            [src]="slide.cover"
+            [alt]="slide.designation_fr || 'Promotion ' + (i + 1)"
+            width="1920"
+            height="560"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            style="width:100%; height:100%; object-fit: cover;"
+            *ngIf="i === 0"
+          >
+
+          <!-- Toutes les autres slides → lazy normal (Swiper gère le préchargement) -->
+          <img 
+            class="swiper-lazy"
+            [attr.data-src]="slide.cover"
+            [alt]="slide.designation_fr || 'Promotion ' + (i + 1)"
+            width="1920"
+            height="560"
+            style="width:100%; height:100%; object-fit: cover;"
+            *ngIf="i !== 0"
+          >
+          <div class="swiper-lazy-preloader" *ngIf="i !== 0"></div>
 
         </div>
       </swiper-slide>
     </ng-container>
+
   </swiper-container>
 </section>

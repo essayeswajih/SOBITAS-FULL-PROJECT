@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, provideClientHydration, withNoDomReuse, withNoHttpTransferCache } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -30,6 +30,11 @@ import { DetailCommandeComponent } from './compte/detail-commande/detail-command
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LayoutComponent } from './layout/layout.component';
 import { SharedModule } from "./shared/shared.module";
+// import function to register Swiper custom elements
+import { register } from 'swiper/element/bundle';
+// register Swiper custom elements
+register();
+
 
 
 
@@ -66,7 +71,8 @@ import { SharedModule } from "./shared/shared.module";
         ProductComponent,
         ArticleComponent,
         NgxPaginationModule,
-        SharedModule
-    ]
+        SharedModule,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

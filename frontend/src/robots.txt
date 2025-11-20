@@ -1,4 +1,4 @@
 User-agent: *
 
 
-Sitemap: https://sobitas.tn/sitemap.xml
+Sitemap: https://sobitas.tn/assets/sitemap.xml

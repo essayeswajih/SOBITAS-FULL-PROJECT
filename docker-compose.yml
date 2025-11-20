@@ -47,7 +47,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ./backend:/var/www/html:delegated   # REQUIRED FOR artisan + storage:link
+      - ./backend:/var/www/html:delegated   # artisan + storage:link OK
 
   # -------------------------
   # Nginx for Laravel
@@ -59,7 +59,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./backend:/var/www/html:delegated   # Changed from :ro → allows symlink
+      - ./backend:/var/www/html:delegated
+      - ./backend/storage:/var/www/html/storage   # << ESSENTIAL FIX
       - ./nginx/laravel.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - sobitas-net
@@ -111,7 +112,6 @@ services:
       - npm-data:/data
       - npm-letsencrypt:/etc/letsencrypt
       - ./letsencrypt/credentials:/etc/letsencrypt/credentials
-      # REMOVED: ./laravel-app/storage/app/public → wrong path
     networks:
       - sobitas-net
     depends_on:

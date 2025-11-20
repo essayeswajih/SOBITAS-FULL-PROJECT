@@ -20,6 +20,7 @@
                 : product.designation_fr
             "
             class="product-image"
+            loading="lazy"
           />
           <!--<div class="sign" *ngIf="product.rupture == 0">Rupture De Stock</div>-->
         </a>
@@ -176,7 +177,8 @@
                               : 'assets/img/product/p1.webp'
                           "
                           [style.opacity]="product.rupture == 0 ? 0.5 : 1"
-                          alt=""
+                          loading="lazy"
+                          [alt]="product.alt_cover ? product.alt_cover : product.designation_fr"
                         />
                         <div class="sign" *ngIf="product.rupture == 0">
                           Rupture De Stock
@@ -192,7 +194,7 @@
                     >
                       <div class="modal_tab_img">
                         <a href="#"
-                          ><img [src]="storage + photo.download_link" alt=""
+                          ><img [src]="storage + photo.download_link" alt="" loading="lazy"
                         /></a>
                       </div>
                     </div>
@@ -217,7 +219,8 @@
                               ? storage + product.cover
                               : 'assets/img/product/p1.webp'
                           "
-                          alt=""
+                          [alt]="product.alt_cover ? product.alt_cover : product.designation_fr"
+                          loading="lazy"
                         />
                       </a>
                     </li>
@@ -229,7 +232,7 @@
                         role="tab"
                         aria-controls="tab2"
                         aria-selected="false"
-                        ><img [src]="storage + photo.download_link" alt=""
+                        ><img [src]="storage + photo.download_link" alt="" loading="lazy"
                       /></a>
                     </li>
                   </ul>
